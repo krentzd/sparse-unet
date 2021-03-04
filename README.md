@@ -4,7 +4,7 @@ This is a 2D U-Net Keras implementation that works with sparsely annotated groun
 
 # Installation
 
-Clone this repository and install the required packages from requirements.txt 
+Clone this repository and run `pip install -r requirements.txt` to install the required packages.
 
 # Usage
 
