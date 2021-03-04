@@ -1,6 +1,6 @@
 # Sparse U-Net
 
-This is a 2D U-Net implementation that works with sparsely annotated ground-truth data. 
+This is a 2D U-Net Keras implementation that works with sparsely annotated ground-truth data. 
 
 # Installation
 
