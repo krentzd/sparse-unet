@@ -13,49 +13,7 @@ Clone this repository and install required packages from requirements.txt
 For binary classification, the training data that is collected must contain two classes: (1) foreground and (2) background. The training, testing and validation data directories should have the following structure:
 
 ```
-path/to/train_dir
-|
-└───images
-|   |--img_1.png
-|   |--img_2.png
-|   |--...
-|   |--img_n.png
-|
-└───masks
-    └───background
-    |   |--img_1.png
-    |   |--img_2.png
-    |   |--...
-    |   |--img_n.png
-    |
-    └───foreground
-        |--img_1.png
-        |--img_2.png
-        |--...
-        |--img_n.png
-
-path/to/val_dir
-|
-└───images
-|   |--img_1.png
-|   |--img_2.png
-|   |--...
-|   |--img_n.png
-|
-└───masks
-    └───background
-    |   |--img_1.png
-    |   |--img_2.png
-    |   |--...
-    |   |--img_n.png
-    |
-    └───foreground
-        |--img_1.png
-        |--img_2.png
-        |--...
-        |--img_n.png
-
-path/to/test_dir
+path/to/directory
 |
 └───images
 |   |--img_1.png
