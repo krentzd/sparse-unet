@@ -45,11 +45,11 @@ python train.py --train_dir path/to/train_dir --val_dir path/to/val_dir --out_di
 
 To test the model run the following command:
 ```
-python train.py --test_dir path/to/test_dir --out_dir path/to/out_dir --ckpt path/to/checkpoint
+python test.py --test_dir path/to/test_dir --out_dir path/to/out_dir --ckpt path/to/checkpoint
 ```
 ## Prediction 
 
 To generate predictions in batch from the model run the following command:
 ```
-python train.py --in_dir path/to/in_dir --out_dir path/to/out_dir --ckpt path/to/checkpoint
+python predict.py --in_dir path/to/in_dir --out_dir path/to/out_dir --ckpt path/to/checkpoint
 ```
