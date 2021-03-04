@@ -4,7 +4,7 @@ This is a 2D U-Net implementation that works with sparsely annotated ground-trut
 
 # Installation
 
-Clone this repository and install required packages from requirements.txt 
+Clone this repository and install the required packages from requirements.txt 
 
 # Usage
 
