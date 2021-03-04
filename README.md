@@ -10,10 +10,10 @@ Clone this repository and install required packages from requirements.txt
 
 ## Collecting training data
 
-For binary classification, the training data that is collected must contain two classes: (1) foreground and (2) background. The training data directory should have the following structure:
+For binary classification, the training data that is collected must contain two classes: (1) foreground and (2) background. The training and testing data directories should have the following structure:
 
 ```
-train_dir
+path/to/train_dir
 |
 └───images
 |   |--img_1.png
@@ -34,6 +34,26 @@ train_dir
         |--...
         |--img_n.png
 
+path/to/test_dir
+|
+└───images
+|   |--img_1.png
+|   |--img_2.png
+|   |--...
+|   |--img_n.png
+|
+└───masks
+    └───background
+    |   |--img_1.png
+    |   |--img_2.png
+    |   |--...
+    |   |--img_n.png
+    |
+    └───foreground
+        |--img_1.png
+        |--img_2.png
+        |--...
+        |--img_n.png
 ```
 
 ## Training 
