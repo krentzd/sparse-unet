@@ -1,33 +1,30 @@
-# Argparse here for training
-
+#!/usr/bin/env python3
+# coding: utf-8
+import argparse
 from model import SparseUnet
 
+def coords(s):
+    try:
+        x, y = map(int, s.split(','))
+        return x, y
+    except:
+        raise argparse.ArgumentTypeError('Shape must be x,y! E.g. --shape 512,512')
+
 if __name__ == '__main__':
-    model = SparseUnet(shape=(512, 512, 1))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--train_dir', required=True)
+    parser.add_argument('--val_dir', required=True)
+    parser.add_argument('--out_dir', required=True)
+    parser.add_argument('--epochs', type=int, default=100)
+    parser.add_argument('--batch_size', type=int, default=8)
+    parser.add_argument('--dense_annotations', action='store_true')
+    args = parser.parse_args()
 
-    model.train(train_dir='benchmark_EM/train',
-                test_dir='benchmark_EM/test',
-                out_dir='FINAL_512x512x4_200_epochs_only_sparse_run_3',
-                epochs=200,
-                batch_size=4,
-                dense=False)
+    model = SparseUnet(shape=(args.shape, 1))
 
-    # model.load('sparse_unet_epoch_118_val_loss_0.0000.hdf5')
-    model.load('sparse_unet_epoch_193_val_loss_0.0000.hdf5')
-
-    # img = tifffile.imread('../Data/CLEM_001/EM_001_50x50x50nm.tif')[80:90]
-
-    img_lst = sorted(glob.glob(os.path.join('../Data/CLEM_003/EM04422_04_PNG', '*')))
-
-    # img_pred = np.empty(img.shape)
-
-    for i in tqdm(range(len(img_lst))):
-        img_pred = model.predict(imageio.imread(img_lst[i]), tile_shape=(1167, 1167)) #(1167, 1167)
-
-        imageio.imwrite(os.path.join('../Data/CLEM_003/EM0442_04_PNG_pred', 'pred_{}.png'.format(i)), img_pred.astype('float'))
-
-
-    # tifffile.imwrite('EM_001_50x50x50nm_pred.tif', img_pred.astype('float32'))
-    # img = imageio.imread('img.088.png')
-    # img_pred = model.predict(img, tile_shape=(1167, 1167))
-    # imageio.imwrite('img.088_pred.png', (img_pred > 0.8).astype('float'))
+    model.train(train_dir=args.train_dir,
+                test_dir=args.val_dir,
+                out_dir=args.out_dir,
+                epochs=args.epochs,
+                batch_size=args.batch_size,
+                dense=args.dense_annotations)

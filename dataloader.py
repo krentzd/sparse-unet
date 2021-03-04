@@ -180,7 +180,6 @@ class SparseDataGenerator(Sequence):
         else:
             return img_batch, msk_batch
 
-
     def on_epoch_end(self):
 
         random.shuffle(self.data_list)

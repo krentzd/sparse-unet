@@ -95,7 +95,7 @@ class SparseUnet:
 
     def train(self,
               train_dir,
-              test_dir,
+              val_dir,
               out_dir,
               epochs=100,
               batch_size=32,
@@ -114,7 +114,7 @@ class SparseUnet:
                                               shape=self.shape,
                                               dense=dense)
 
-        val_generator = SparseDataGenerator(test_dir,
+        val_generator = SparseDataGenerator(val_dir,
                                             batch_size=batch_size,
                                             shape=self.shape,
                                             dense=dense,
