@@ -29,10 +29,10 @@ train_dir
     |   |--img_n.png
     |
     └───foreground
-    |   |--img_1.png
-    |   |--img_2.png
-    |   |--...
-    |   |--img_n.png
+        |--img_1.png
+        |--img_2.png
+        |--...
+        |--img_n.png
 
 ```
 
