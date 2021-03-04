@@ -1,3 +1,41 @@
+#!/usr/bin/env python3
+# coding: utf-8
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import os
+import csv
+import h5py
+import math
+
+import numpy as np
+import tensorflow as tf
+import imgaug.augmenters as iaa
+
+from skimage import transform
+from skimage import exposure
+from skimage.exposure import equalize_hist
+
+from keras.layers import Conv2D
+from keras.layers import BatchNormalization
+from keras.layers import ReLU
+from keras.layers import MaxPooling2D
+from keras.layers import Conv2DTranspose
+from keras.layers import Input
+from keras.layers import Concatenate
+from keras.layers import Reshape
+from keras.callbacks import ModelCheckpoint
+from keras.callbacks import CSVLogger
+from keras.callbacks import Callback
+from keras.models import Model
+
+from dataloader import SparseDataGenerator
+from utils import SampleImageCallback
+from utils import weighted_categorical_crossentropy
+from utils import dice_coefficient
+
 class SparseUnet:
     def __init__(self, shape=(256,256,1)):
 
@@ -55,7 +93,15 @@ class SparseUnet:
 
         return Model(inputs=[input_tensor], outputs=[output_tensor])
 
-    def train(self, train_dir, test_dir, out_dir, epochs=100, batch_size=32, dense=False, log_name='log.csv', model_name='sparse_unet'):
+    def train(self,
+              train_dir,
+              test_dir,
+              out_dir,
+              epochs=100,
+              batch_size=32,
+              dense=False,
+              log_name='log.csv',
+              model_name='sparse_unet'):
 
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)

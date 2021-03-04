@@ -1,3 +1,16 @@
+#!/usr/bin/env python3
+# coding: utf-8
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import numpy as np
+import matplotlib.pyplot as plt
+from keras import backend as K
+from keras.callbacks import Callback
+
 # from: https://gist.github.com/wassname/ce364fddfc8a025bfab4348cf5de852d
 def weighted_categorical_crossentropy(weights):
 
