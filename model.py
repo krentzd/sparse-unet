@@ -18,20 +18,21 @@ from skimage import transform
 from skimage import exposure
 from skimage.exposure import equalize_hist
 
-from keras.layers import Conv2D
-from keras.layers import BatchNormalization
-from keras.layers import ReLU
-from keras.layers import MaxPooling2D
-from keras.layers import Conv2DTranspose
-from keras.layers import Input
-from keras.layers import Concatenate
-from keras.layers import Reshape
-from keras.callbacks import ModelCheckpoint
-from keras.callbacks import CSVLogger
-from keras.callbacks import Callback
-from keras.models import Model
+from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import BatchNormalization
+from tensorflow.keras.layers import ReLU
+from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.layers import Conv2DTranspose
+from tensorflow.keras.layers import Input
+from tensorflow.keras.layers import Concatenate
+from tensorflow.keras.layers import Reshape
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.callbacks import CSVLogger
+from tensorflow.keras.callbacks import Callback
+from tensorflow.keras.models import Model
+from tensorflow.keras.optimizers import Adam
 
-from dataloader import SparseDataGenerator
+from dataloader import SparseDataGenerator, SparseTiffDataGenerator
 from utils import SampleImageCallback
 from utils import weighted_categorical_crossentropy
 from utils import dice_coefficient
@@ -94,8 +95,8 @@ class SparseUnet:
         return Model(inputs=[input_tensor], outputs=[output_tensor])
 
     def train(self,
-              train_dir,
-              val_dir,
+              source,
+              target,
               out_dir,
               epochs=100,
               batch_size=32,
@@ -103,22 +104,28 @@ class SparseUnet:
               log_name='log.csv',
               model_name='sparse_unet'):
 
+        print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
 
         if not os.path.exists(os.path.join(out_dir, 'ckpt')):
             os.makedirs(os.path.join(out_dir, 'ckpt'))
 
-        train_generator = SparseDataGenerator(train_dir,
-                                              batch_size=batch_size,
-                                              shape=self.shape,
-                                              dense=dense)
+        train_generator = SparseTiffDataGenerator(source,
+                                                  target,
+                                                  batch_size=batch_size,
+                                                  shape=self.shape,
+                                                  dense=dense,
+                                                  augment=False)
 
-        val_generator = SparseDataGenerator(val_dir,
-                                            batch_size=batch_size,
-                                            shape=self.shape,
-                                            dense=dense,
-                                            augment=False)
+        val_generator = SparseTiffDataGenerator(source,
+                                                target,
+                                                batch_size=batch_size,
+                                                shape=self.shape,
+                                                dense=dense,
+                                                augment=False,
+                                                is_val=True)
 
         sample_batch = val_generator[0][0]
         sample_img = SampleImageCallback(self.model,
@@ -128,7 +135,9 @@ class SparseUnet:
 
         weight_zero, weight_one, weight_two = train_generator.batch_weights()
 
-        self.model.compile(optimizer='adam',
+        optim = Adam(learning_rate=0.001)
+
+        self.model.compile(optimizer=optim,
                            loss=weighted_categorical_crossentropy(np.array([weight_zero, weight_one, weight_two])),
                            metrics=[dice_coefficient])
 
@@ -145,14 +154,14 @@ class SparseUnet:
                                      save_best_only=False,
                                      save_weights_only=True)
 
-        self.model.fit_generator(generator=train_generator,
-                                 validation_data=val_generator,
-                                 validation_steps=math.floor(len(val_generator))/batch_size,
-                                 epochs=epochs,
-                                 shuffle=False,
-                                 callbacks=[csv_logger,
-                                            model_ckpt,
-                                            sample_img])
+        self.model.fit(train_generator,
+                       validation_data=val_generator,
+                       validation_steps=math.floor(len(val_generator))/batch_size,
+                       epochs=epochs,
+                       shuffle=False,
+                       callbacks=[csv_logger,
+                                  model_ckpt,
+                                  sample_img])
 
     def predict(self, input, tile_shape):
 

@@ -12,8 +12,8 @@ def coords(s):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--train_dir', required=True)
-    parser.add_argument('--val_dir', required=True)
+    parser.add_argument('--source', required=True)
+    parser.add_argument('--target', required=True)
     parser.add_argument('--out_dir', required=True)
     parser.add_argument('--shape', type=coords, default=(512,512))
     parser.add_argument('--epochs', type=int, default=100)
@@ -23,8 +23,8 @@ if __name__ == '__main__':
 
     model = SparseUnet(shape=(args.shape[0], args.shape[1], 1))
 
-    model.train(train_dir=args.train_dir,
-                val_dir=args.val_dir,
+    model.train(source=args.source,
+                target=args.target,
                 out_dir=args.out_dir,
                 epochs=args.epochs,
                 batch_size=args.batch_size,
